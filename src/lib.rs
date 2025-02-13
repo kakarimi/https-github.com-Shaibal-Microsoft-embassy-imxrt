@@ -23,6 +23,7 @@ pub mod crc;
 pub mod dma;
 pub mod flash;
 pub mod flexcomm;
+pub mod flexspi_nor_storage_bus;
 pub mod gpio;
 pub mod hashcrypt;
 pub mod i2c;
@@ -154,6 +155,7 @@ pub fn init(config: config::Config) -> Peripherals {
         dma::init();
         gpio::init();
         timer::init();
+        flexspi_nor_storage_bus::init();
     }
 
     peripherals
