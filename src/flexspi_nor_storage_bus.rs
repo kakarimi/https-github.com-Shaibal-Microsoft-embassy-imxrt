@@ -7,9 +7,9 @@ use cortex_m::asm;
 use embassy_hal_internal::Peripheral;
 use mimxrt600_fcb::FlexSpiLutOpcode;
 use mimxrt600_fcb::FlexSpiLutOpcode::*;
-use storage_bus::storage_bus::{
-    AsyncNorStorageBusDriver, BlockingNorStorageBusDriver, DummyCycles, NorStorageBusWidth, NorStorageCmd,
-    NorStorageCmdMode, NorStorageCmdType, StorageBusError,
+use storage_bus::nor::{
+    AsyncNorStorageBusDriver, BlockingNorStorageBusDriver, NorStorageBusError, NorStorageBusWidth, NorStorageCmd,
+    NorStorageCmdMode, NorStorageCmdType, NorStorageDummyCycles,
 };
 
 use crate::clocks::enable_and_reset;
@@ -442,7 +442,7 @@ impl BlockingNorStorageBusDriver for FlexspiNorStorageBus<Blocking> {
         cmd: NorStorageCmd,
         read_buf: Option<&mut [u8]>,
         write_buf: Option<&[u8]>,
-    ) -> Result<(), StorageBusError> {
+    ) -> Result<(), NorStorageBusError> {
         self.setup_ip_transfer(2, cmd.addr, cmd.data_bytes);
         self.program_lut(&cmd, 2);
         self.execute_ip_cmd();
@@ -455,7 +455,7 @@ impl BlockingNorStorageBusDriver for FlexspiNorStorageBus<Blocking> {
         info!("Reading Status 1 = {:08X}", self.info.regs.sts1().read().bits());
 
         if self.is_error_state() {
-            return Err(StorageBusError::StorageBusInternalError);
+            return Err(NorStorageBusError::StorageBusInternalError);
         }
 
         if let Some(data_cmd) = cmd.cmdtype {
@@ -572,10 +572,10 @@ impl<M: Mode> FlexspiNorStorageBus<M> {
         let mut dummy_val: u8;
 
         match cmd.dummy {
-            DummyCycles::Bytes(dummy_bytes) => {
+            NorStorageDummyCycles::Bytes(dummy_bytes) => {
                 dummy_val = dummy_bytes;
             }
-            DummyCycles::Clocks(dummy_cycles) => {
+            NorStorageDummyCycles::Clocks(dummy_cycles) => {
                 dummy_val = dummy_cycles;
             }
         }

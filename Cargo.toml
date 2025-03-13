@@ -54,7 +54,7 @@ _mimxrt685s = []
 _mimxrt633s = []
 
 [dependencies]
-storage-bus-service = { git = "https://github.com/Shaibal-Microsoft/embedded-services", version = "0.1.1" }
+storage_bus = { git = "https://github.com/Shaibal-Microsoft/embedded-services", version = "0.1.1" }
 embassy-sync = { git = "https://github.com/embassy-rs/embassy" }
 embassy-time-driver = { git = "https://github.com/embassy-rs/embassy", optional = true }
 embassy-time-queue-utils = { git = "https://github.com/embassy-rs/embassy", optional = true }

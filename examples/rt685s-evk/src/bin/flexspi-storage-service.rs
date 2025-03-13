@@ -15,8 +15,9 @@ use embedded_storage::nor_flash::{
     ErrorType, NorFlash as BlockingNorFlash, NorFlashError, NorFlashErrorKind, ReadNorFlash as BlockingReadNorFlash,
 };
 use embedded_storage_async::nor_flash::{NorFlash as AsyncNorFlash, ReadNorFlash as AsyncReadNorFlash};
-use storage_bus::storage_bus::{
-    BlockingNorStorageBusDriver, DummyCycles, NorStorageBusWidth, NorStorageCmd, NorStorageCmdMode, NorStorageCmdType,
+use storage_bus::nor::{
+    BlockingNorStorageBusDriver, NorStorageBusWidth, NorStorageCmd, NorStorageCmdMode, NorStorageCmdType,
+    NorStorageDummyCycles,
 };
 use {defmt_rtt as _, panic_probe as _};
 
@@ -82,7 +83,7 @@ impl<T: BlockingNorStorageBusDriver> BlockingReadNorFlash for MacronixDeviceDriv
                 addr_width: Some(4),
                 bus_width: NorStorageBusWidth::Octal, // 3 - Octal
                 mode: NorStorageCmdMode::DDR,
-                dummy: DummyCycles::Clocks(0x3),
+                dummy: NorStorageDummyCycles::Clocks(0x3),
                 cmdtype: Some(NorStorageCmdType::Read),
                 data_bytes: Some(bytes.len() as u32),
             };
@@ -101,7 +102,7 @@ impl<T: BlockingNorStorageBusDriver> BlockingReadNorFlash for MacronixDeviceDriv
                     addr_width: Some(4),
                     bus_width: NorStorageBusWidth::Octal,
                     mode: NorStorageCmdMode::DDR,
-                    dummy: DummyCycles::Clocks(20),
+                    dummy: NorStorageDummyCycles::Clocks(20),
                     cmdtype: Some(NorStorageCmdType::Read),
                     data_bytes: Some(Self::READ_SIZE as u32),
                 };
@@ -121,7 +122,7 @@ impl<T: BlockingNorStorageBusDriver> BlockingReadNorFlash for MacronixDeviceDriv
                     addr_width: Some(4),
                     bus_width: NorStorageBusWidth::Octal,
                     mode: NorStorageCmdMode::DDR,
-                    dummy: DummyCycles::Clocks(20),
+                    dummy: NorStorageDummyCycles::Clocks(20),
                     cmdtype: Some(NorStorageCmdType::Read),
                     data_bytes: Some((bytes.len() - read_start_ptr) as u32),
                 };
@@ -167,7 +168,7 @@ impl<T: BlockingNorStorageBusDriver> BlockingNorFlash for MacronixDeviceDriver<T
                     addr_width: Some(4),
                     bus_width: NorStorageBusWidth::Octal,
                     mode: NorStorageCmdMode::DDR,
-                    dummy: DummyCycles::Clocks(0),
+                    dummy: NorStorageDummyCycles::Clocks(0),
                     cmdtype: None,
                     data_bytes: None,
                 },
@@ -191,7 +192,7 @@ impl<T: BlockingNorStorageBusDriver> BlockingNorFlash for MacronixDeviceDriver<T
             addr_width: None,
             bus_width: NorStorageBusWidth::Octal,
             mode: NorStorageCmdMode::DDR,
-            dummy: DummyCycles::Clocks(0),
+            dummy: NorStorageDummyCycles::Clocks(0),
             cmdtype: None,
             data_bytes: None,
         };
@@ -205,7 +206,7 @@ impl<T: BlockingNorStorageBusDriver> BlockingNorFlash for MacronixDeviceDriver<T
             addr_width: Some(4),
             bus_width: NorStorageBusWidth::Octal,
             mode: NorStorageCmdMode::DDR,
-            dummy: DummyCycles::Clocks(0x14),
+            dummy: NorStorageDummyCycles::Clocks(0x14),
             cmdtype: Some(NorStorageCmdType::Read),
             data_bytes: Some(1),
         };
@@ -229,7 +230,7 @@ impl<T: BlockingNorStorageBusDriver> BlockingNorFlash for MacronixDeviceDriver<T
                     addr_width: Some(4),
                     bus_width: NorStorageBusWidth::Octal,
                     mode: NorStorageCmdMode::DDR,
-                    dummy: DummyCycles::Clocks(0),
+                    dummy: NorStorageDummyCycles::Clocks(0),
                     cmdtype: None,
                     data_bytes: Some(Self::WRITE_SIZE as u32),
                 };
@@ -245,7 +246,7 @@ impl<T: BlockingNorStorageBusDriver> BlockingNorFlash for MacronixDeviceDriver<T
                     addr_width: Some(4),
                     bus_width: NorStorageBusWidth::Octal,
                     mode: NorStorageCmdMode::DDR,
-                    dummy: DummyCycles::Clocks(0),
+                    dummy: NorStorageDummyCycles::Clocks(0),
                     cmdtype: None,
                     data_bytes: Some((bytes.len() - write_start_ptr) as u32),
                 };
